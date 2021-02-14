@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: students by Stoplight
+  version: '1.0'
+  description: |-
+    Students provides a simple wey for develop my demo app ...
+    This API can be used to create web application.
+servers:
+  - url: 'http://localhost:8081'
+paths:
+  /students:
+    get:
+      summary: List Students
+      tags:
+        - Students
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+      operationId: get-students
+      description: This return list of students.
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/active'
+    post:
+      summary: Create Student
+      operationId: post-students
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+      description: This create a student object.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      parameters:
+        - $ref: '#/components/parameters/contentType'
+      tags:
+        - Students
+  '/students/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: GET Student
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+              examples: {}
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+      operationId: get-students-id
+      description: This return a student detail.
+      tags:
+        - Students
+      parameters:
+        - $ref: '#/components/parameters/active'
+    put:
+      summary: Update Student
+      operationId: put-students-id
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      description: Edit a student by id.
+      tags:
+        - Students
+components:
+  schemas:
+    Student:
+      description: ''
+      type: object
+      x-examples:
+        example-1:
+          id: 0
+          firstName: string
+          lastName: string
+          active: true
+          address:
+            street: string
+            city: string
+            state: string
+            zip: string
+            country: string
+          languages:
+            - {}
+          company: string
+          birthdate: string
+      properties:
+        id:
+          type: number
+          readOnly: true
+        firstName:
+          type: string
+          minLength: 1
+        lastName:
+          type: string
+          minLength: 1
+        active:
+          type: boolean
+        address:
+          type: object
+          required:
+            - street
+            - city
+            - state
+            - zip
+            - country
+          properties:
+            street:
+              type: string
+              minLength: 1
+            city:
+              type: string
+              minLength: 1
+            state:
+              type: string
+              minLength: 1
+            zip:
+              type: string
+              minLength: 1
+            country:
+              type: string
+              minLength: 1
+        languages:
+          type: array
+          items:
+            type: object
+        company:
+          type: string
+          minLength: 1
+        birthdate:
+          type: string
+          format: date-time
+      required:
+        - id
+        - firstName
+        - lastName
+        - active
+        - address
+        - languages
+        - company
+  parameters:
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Returns a list of students
+    contentType:
+      name: contentType
+      in: header
+      required: false
+      schema:
+        type: string
+      description: application/json
+    active:
+      name: active
+      in: query
+      required: true
+      schema:
+        type: boolean
+      description: Returns active student
+  responses:
+    '401':
+      description: 'Unauthorized '
+      content:
+        application/json:
+          schema:
+            $ref: ./Error.v1.yaml
+tags:
+  - name: Students
